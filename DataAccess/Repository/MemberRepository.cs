@@ -10,8 +10,19 @@ public class MemberRepository : IMemberRepository
         return MemberDAO.Instance.GetAllMember();
     }
 
-    public Task<Member> Get(int id)
+    public Task<Member?> Get(int id)
     {
         return MemberDAO.Instance.GetMember(id);
+    }
+
+    public Task Delete(int id)
+    {
+        return MemberDAO.Instance.Delete(id);
+    }
+
+    public Task Update(Member member)
+    {
+        return MemberDAO.Instance.Update(member);
+
     }
 }

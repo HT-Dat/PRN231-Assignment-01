@@ -1,3 +1,4 @@
+using System.Reflection;
 using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,7 @@ internal class MemberDAO
         return await context.Members.ToListAsync();
     }
 
-    public async Task<Member?> GetMember(int? id)
+    public async Task<Member?> GetMember(int id)
     {
         var context = new FStoreDBContext();
         Member? member = await context.Members.Where(member => member.MemberId == id).FirstOrDefaultAsync();
@@ -44,5 +45,21 @@ internal class MemberDAO
             throw new NullReferenceException();
         }
         return member;
+    }
+
+    public async Task Delete(int id)
+    {
+        var context = new FStoreDBContext();
+        Member member = new Member() { MemberId = id };
+        context.Members.Attach(member);
+        context.Members.Remove(member);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task Update(Member member)
+    {
+        var context = new FStoreDBContext();
+        context.Members.Update(member);
+        await context.SaveChangesAsync();
     }
 }
