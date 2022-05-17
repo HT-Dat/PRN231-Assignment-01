@@ -39,27 +39,28 @@ internal class MemberDAO
     {
         var context = new FStoreDBContext();
         Member? member = await context.Members.Where(member => member.MemberId == id).FirstOrDefaultAsync();
-
-        if (member == null)
-        {
-            throw new NullReferenceException();
-        }
         return member;
     }
 
     public async Task Delete(int id)
     {
-        var context = new FStoreDBContext();
-        Member member = new Member() { MemberId = id };
-        context.Members.Attach(member);
-        context.Members.Remove(member);
-        await context.SaveChangesAsync();
+        if ((await GetMember(id)) != null)
+        {
+            var context = new FStoreDBContext();
+            Member member = new Member() { MemberId = id };
+            context.Members.Attach(member);
+            context.Members.Remove(member);
+            await context.SaveChangesAsync();
+        }
     }
 
     public async Task Update(Member member)
     {
-        var context = new FStoreDBContext();
-        context.Members.Update(member);
-        await context.SaveChangesAsync();
+        if ((await GetMember(member.MemberId)) != null)
+        {
+            var context = new FStoreDBContext();
+            context.Members.Update(member);
+            await context.SaveChangesAsync();
+        }
     }
 }
