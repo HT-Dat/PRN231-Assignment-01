@@ -7,12 +7,12 @@ public class MemberRepository : IMemberRepository
 {
     public Task<IEnumerable<Member>> GetAll()
     {
-        return MemberDAO.Instance.GetAllMember();
+        return MemberDAO.Instance.GetAll();
     }
 
     public Task<Member?> Get(int id)
     {
-        return MemberDAO.Instance.GetMember(id);
+        return MemberDAO.Instance.Get(id);
     }
 
     public Task Delete(int id)
