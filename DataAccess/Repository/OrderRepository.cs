@@ -1,6 +1,27 @@
+using BusinessObject;
+using DataAccess.DAO;
+
 namespace DataAccess.Repository;
 
-public class OrderRepository
+public class OrderRepository : IOrderRepository
 {
-    
+    public Task<IEnumerable<Order>> GetAll()
+    {
+        return OrderDAO.Instance.GetAll();
+    }
+
+    public Task<Order?> Get(int id)
+    {
+        return OrderDAO.Instance.Get(id);
+    }
+
+    public Task Delete(int id)
+    {
+        return OrderDAO.Instance.Delete(id);
+    }
+
+    public Task Update(Order order)
+    {
+        return OrderDAO.Instance.Update(order);
+    }
 }
