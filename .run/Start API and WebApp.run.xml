@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start API and WebApp" type="CompoundRunConfigurationType">
+    <toRun name="eStoreAPI" type="LaunchSettings" />
+    <toRun name="eStoreClient" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>
