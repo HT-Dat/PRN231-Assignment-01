@@ -75,7 +75,7 @@ namespace eStoreAPI
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (await _memberRepository.Get(member.MemberId) != null)
+                if (await _memberRepository.Get(member.MemberId) == null)
                 {
                     return NotFound();
                 }
