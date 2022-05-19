@@ -57,7 +57,12 @@ internal class OrderDetailDAO
 
         
     }
-
+    public async Task Add(OrderDetail orderDetail)
+    {
+        var context = new FStoreDBContext();
+        context.OrderDetails.Add(orderDetail);
+        await context.SaveChangesAsync();
+    }
     public async Task Delete(int productId, int orderId)
     {
         OrderDetail? orderDetailInMemory;

@@ -15,6 +15,11 @@ public class OrderDetailRepository : IOrderDetailRepository
         return OrderDetailDAO.Instance.Get(productId, orderId);
     }
 
+    public Task Add(OrderDetail orderDetail)
+    {
+        return OrderDetailDAO.Instance.Add(orderDetail);
+    }
+
     public Task Delete(int productId, int orderId)
     {
         return OrderDetailDAO.Instance.Delete(productId, orderId);
