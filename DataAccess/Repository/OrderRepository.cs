@@ -15,6 +15,11 @@ public class OrderRepository : IOrderRepository
         return OrderDAO.Instance.Get(id);
     }
 
+    public Task Add(Order order)
+    {
+        return OrderDAO.Instance.Add(order);
+    }
+
     public Task Delete(int id)
     {
         return OrderDAO.Instance.Delete(id);
