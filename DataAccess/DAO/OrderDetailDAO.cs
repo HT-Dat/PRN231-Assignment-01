@@ -39,53 +39,39 @@ internal class OrderDetailDAO
         var context = new FStoreDBContext();
         try
         {
-            Console.WriteLine("Ibrrr");
-
             OrderDetail? orderDetail = await context.OrderDetails
                 .Where(orderDetail => orderDetail.OrderId == orderId && orderDetail.ProductId == productId)
                 .FirstOrDefaultAsync();
-            Console.WriteLine("I crashed here");
-
             return orderDetail;
-
         }
         catch (Exception)
         {
-
         }
-        return null;
 
-        
+        return null;
     }
+
     public async Task Add(OrderDetail orderDetail)
     {
         var context = new FStoreDBContext();
         context.OrderDetails.Add(orderDetail);
         await context.SaveChangesAsync();
     }
+
     public async Task Delete(int productId, int orderId)
     {
-        OrderDetail? orderDetailInMemory;
-        Console.WriteLine("ACBCBC");
-        if ((orderDetailInMemory = (await Get(productId, orderId))) != null)
-        {
-            
-            var context = new FStoreDBContext();
-            context.OrderDetails.Remove(orderDetailInMemory);
-            await context.SaveChangesAsync();
-        }
-
+        var context = new FStoreDBContext();
+        OrderDetail? orderDetailInMemory = 
+            new OrderDetail() { OrderId = orderId, ProductId = productId };
+        context.OrderDetails.Attach(orderDetailInMemory);
+        context.OrderDetails.Remove(orderDetailInMemory);
+        await context.SaveChangesAsync();
     }
 
     public async Task Update(OrderDetail orderDetail)
     {
-        OrderDetail? orderDetailInMemory;
-
-        if ((orderDetailInMemory = await Get(orderDetail.ProductId,orderDetail.OrderId)) != null)
-        {
-            var context = new FStoreDBContext();
-            context.OrderDetails.Update(orderDetailInMemory);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        context.OrderDetails.Update(orderDetail);
+        await context.SaveChangesAsync();
     }
 }
