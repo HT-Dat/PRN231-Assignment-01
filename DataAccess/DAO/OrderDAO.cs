@@ -40,31 +40,27 @@ internal class OrderDAO
         Order? order = await context.Orders.Where(order => order.OrderId == id).FirstOrDefaultAsync();
         return order;
     }
+
     public async Task Add(Order order)
     {
         var context = new FStoreDBContext();
         context.Orders.Add(order);
         await context.SaveChangesAsync();
     }
+
     public async Task Delete(int id)
     {
-        if ((await Get(id)) != null)
-        {
-            var context = new FStoreDBContext();
-            Order order = new Order() { OrderId = id };
-            context.Orders.Attach(order);
-            context.Orders.Remove(order);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        Order order = new Order() { OrderId = id };
+        context.Orders.Attach(order);
+        context.Orders.Remove(order);
+        await context.SaveChangesAsync();
     }
 
     public async Task Update(Order order)
     {
-        if ((await Get(order.OrderId)) != null)
-        {
-            var context = new FStoreDBContext();
-            context.Orders.Update(order);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        context.Orders.Update(order);
+        await context.SaveChangesAsync();
     }
 }
