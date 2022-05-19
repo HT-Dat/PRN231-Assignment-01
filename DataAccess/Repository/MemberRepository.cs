@@ -3,7 +3,7 @@ using DataAccess.DAO;
 
 namespace DataAccess.Repository;
 
-public class MemberRepository : IMemberRepository
+public class MemberRepository : IMemberRepository 
 {
     public Task<IEnumerable<Member>> GetAll()
     {
@@ -13,6 +13,11 @@ public class MemberRepository : IMemberRepository
     public Task<Member?> Get(int id)
     {
         return MemberDAO.Instance.Get(id);
+    }
+
+    public Task Add(Member member)
+    {
+        return MemberDAO.Instance.Add(member);
     }
 
     public Task Delete(int id)
