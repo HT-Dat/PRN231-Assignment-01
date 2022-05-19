@@ -42,6 +42,13 @@ internal class MemberDAO
         return member;
     }
 
+    public async Task Add(Member member)
+    {
+        var context = new FStoreDBContext();
+        context.Members.Add(member);
+        await context.SaveChangesAsync();
+    }
+
     public async Task Delete(int id)
     {
         if ((await Get(id)) != null)
@@ -56,11 +63,8 @@ internal class MemberDAO
 
     public async Task Update(Member member)
     {
-        if ((await Get(member.MemberId)) != null)
-        {
-            var context = new FStoreDBContext();
-            context.Members.Update(member);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        context.Members.Update(member);
+        await context.SaveChangesAsync();
     }
 }
