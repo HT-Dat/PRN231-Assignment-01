@@ -59,11 +59,8 @@ internal class ProductDAO
 
     public async Task Update(Product product)
     {
-        if ((await Get(product.ProductId)) != null)
-        {
-            var context = new FStoreDBContext();
-            context.Products.Update(product);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        context.Products.Update(product);
+        await context.SaveChangesAsync();
     }
 }
