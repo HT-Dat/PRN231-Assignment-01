@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject
 {
@@ -16,8 +17,7 @@ namespace BusinessObject
         public string Weight { get; set; } = null!;
         public decimal UnitPrice { get; set; }
         public int UnitsInStock { get; set; }
-
-        public virtual Category? Category { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        [JsonIgnore] public virtual Category? Category { get; set; }
+        [JsonIgnore] public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

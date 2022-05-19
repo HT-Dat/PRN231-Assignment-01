@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject
 {
@@ -16,7 +17,6 @@ namespace BusinessObject
         public string City { get; set; } = null!;
         public string Country { get; set; } = null!;
         public string Password { get; set; } = null!;
-
-        public virtual ICollection<Order> Orders { get; set; }
+        [JsonIgnore] public virtual ICollection<Order> Orders { get; set; }
     }
 }
