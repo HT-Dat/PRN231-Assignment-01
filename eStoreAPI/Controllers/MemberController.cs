@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject;
+using DataAccess.Repository;
 
 namespace eStoreAPI
 {
@@ -13,42 +15,46 @@ namespace eStoreAPI
     [ApiController]
     public class MemberController : ControllerBase
     {
-        private readonly FStoreDBContext _context;
+        private readonly IMemberRepository _memberRepository;
 
-        public MemberController(FStoreDBContext context)
+        public MemberController(IMemberRepository memberRepository)
         {
-            _context = context;
+            _memberRepository = memberRepository;
         }
 
         // GET: api/Member
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Member>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Member>>> GetMembers()
         {
-            if (_context.Members == null)
+            var list = await _memberRepository.GetAll();
+            if (list == null)
             {
                 return NotFound();
             }
 
-            return await _context.Members.ToListAsync();
+            return Ok(list);
         }
 
         // GET: api/Member/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Member))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Member>> GetMember(int id)
         {
-            if (_context.Members == null)
-            {
-                return NotFound();
-            }
-
-            var member = await _context.Members.FindAsync(id);
+            Member? member = await _memberRepository.Get(id);
+            // if (_context.Members == null)
+            // {
+            //     return NotFound();
+            // }
 
             if (member == null)
             {
                 return NotFound();
             }
 
-            return member;
+            return Ok(member);
         }
 
         // PUT: api/Member/5
@@ -61,22 +67,20 @@ namespace eStoreAPI
                 return BadRequest();
             }
 
-            _context.Entry(member).State = EntityState.Modified;
+            // _context.Entry(member).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _memberRepository.Update(member);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MemberExists(id))
+                if (await _memberRepository.Get(member.MemberId) != null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();
@@ -85,28 +89,27 @@ namespace eStoreAPI
         // POST: api/Member
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Member>> PostMember(Member member)
         {
-            if (_context.Members == null)
-            {
-                return Problem("Entity set 'FStoreDBContext.Members'  is null.");
-            }
-
-            _context.Members.Add(member);
+            // if (_context.Members == null)
+            // {
+            //     return Problem("Entity set 'FStoreDBContext.Members'  is null.");
+            // }
             try
             {
-                await _context.SaveChangesAsync();
+                await _memberRepository.Add(member);
             }
             catch (DbUpdateException)
             {
-                if (MemberExists(member.MemberId))
+                if (await _memberRepository.Get(member.MemberId) != null)
                 {
                     return Conflict();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return CreatedAtAction("GetMember", new { id = member.MemberId }, member);
@@ -116,26 +119,23 @@ namespace eStoreAPI
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMember(int id)
         {
-            if (_context.Members == null)
-            {
-                return NotFound();
-            }
+            // if (_context.Members == null)
+            // {
+            //     return NotFound();
+            // }
 
-            var member = await _context.Members.FindAsync(id);
+            var member = await _memberRepository.Get(id);
             if (member == null)
             {
                 return NotFound();
             }
-
-            _context.Members.Remove(member);
-            await _context.SaveChangesAsync();
-
+            await _memberRepository.Delete(id);
             return NoContent();
         }
 
-        private bool MemberExists(int id)
-        {
-            return (_context.Members?.Any(e => e.MemberId == id)).GetValueOrDefault();
-        }
+        // private bool MemberExists(int id)
+        // {
+        //     return (_context.Members?.Any(e => e.MemberId == id)).GetValueOrDefault();
+        // }
     }
 }
