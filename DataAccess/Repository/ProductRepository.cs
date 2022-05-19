@@ -15,6 +15,11 @@ public class ProductRepository : IProductRepository
         return ProductDAO.Instance.Get(id);
     }
 
+    public Task Add(Product product)
+    {
+        return ProductDAO.Instance.Add(product);
+    }
+
     public Task Delete(int id)
     {
         return ProductDAO.Instance.Delete(id);
