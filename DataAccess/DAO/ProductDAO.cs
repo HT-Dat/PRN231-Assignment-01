@@ -41,16 +41,20 @@ internal class ProductDAO
         return product;
     }
 
+    public async Task Add(Product product)
+    {
+        var context = new FStoreDBContext();
+        context.Products.Add(product);
+        await context.SaveChangesAsync();
+    }
+
     public async Task Delete(int id)
     {
-        if ((await Get(id)) != null)
-        {
-            var context = new FStoreDBContext();
-            Product product = new Product() { ProductId = id };
-            context.Products.Attach(product);
-            context.Products.Remove(product);
-            await context.SaveChangesAsync();
-        }
+        var context = new FStoreDBContext();
+        Product product = new Product() { ProductId = id };
+        context.Products.Attach(product);
+        context.Products.Remove(product);
+        await context.SaveChangesAsync();
     }
 
     public async Task Update(Product product)
