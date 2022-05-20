@@ -1,47 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using BusinessObject;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace eStoreClient.Pages.Members
 {
     public class IndexModel : PageModel
     {
-        private readonly BusinessObject.FStoreDBContext _context;
-
-        public IndexModel(BusinessObject.FStoreDBContext context)
+        public IndexModel()
         {
-            _context = context;
         }
 
-        public IList<Member> Member { get;set; } = default!;
+        public IList<Member> Member { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Members != null)
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member");
+            HttpContent content = response.Content;
+            var options = new JsonSerializerOptions
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    // If any authorization available
-                    using (HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member"))
-                    {
-                        using (HttpContent content = response.Content)
-                        {
-                            var options = new JsonSerializerOptions
-                            {
-                                PropertyNameCaseInsensitive = true
-                            };
-                            Member = JsonSerializer.Deserialize<List<Member>>(await content.ReadAsStringAsync(), options);
-                        }
-                    }
-                } 
-            }
+                PropertyNameCaseInsensitive = true
+            };
+            Member = await JsonSerializer.DeserializeAsync<List<Member>>(content.ReadAsStream(), options);
         }
     }
 }

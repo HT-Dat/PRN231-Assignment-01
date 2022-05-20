@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,11 +15,8 @@ namespace eStoreClient.Pages.Members
 {
     public class EditModel : PageModel
     {
-        private readonly BusinessObject.FStoreDBContext _context;
-
-        public EditModel(BusinessObject.FStoreDBContext context)
+        public EditModel()
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -24,12 +24,19 @@ namespace eStoreClient.Pages.Members
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Members == null)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var member =  await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member/"+id);
+            HttpContent content = response.Content;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var member = await JsonSerializer.DeserializeAsync<Member>(content.ReadAsStream(), options);
+             
             if (member == null)
             {
                 return NotFound();
@@ -47,30 +54,15 @@ namespace eStoreClient.Pages.Members
                 return Page();
             }
 
-            _context.Attach(Member).State = EntityState.Modified;
-
-            try
+            var memberJson = JsonSerializer.Serialize(Member);
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.PutAsync("http://localhost:5000/api/Member/"+Member.MemberId, new StringContent(memberJson, Encoding.UTF8, "application/json"));
+            // HttpContent content = response.Content;
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MemberExists(Member.MemberId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return RedirectToPage("./Index");
-        }
-
-        private bool MemberExists(int id)
-        {
-          return (_context.Members?.Any(e => e.MemberId == id)).GetValueOrDefault();
         }
     }
 }

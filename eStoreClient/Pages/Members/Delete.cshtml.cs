@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,11 +13,9 @@ namespace eStoreClient.Pages.Members
 {
     public class DeleteModel : PageModel
     {
-        private readonly BusinessObject.FStoreDBContext _context;
 
-        public DeleteModel(BusinessObject.FStoreDBContext context)
+        public DeleteModel()
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -23,37 +23,50 @@ namespace eStoreClient.Pages.Members
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Members == null)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
-
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member/"+id);
+            HttpContent content = response.Content;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var member = await JsonSerializer.DeserializeAsync<Member>(content.ReadAsStream(), options);
+             
             if (member == null)
             {
                 return NotFound();
             }
-            else 
-            {
-                Member = member;
-            }
+            Member = member;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Members == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var member = await _context.Members.FindAsync(id);
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member/"+id);
+            HttpContent content = response.Content;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var member = await JsonSerializer.DeserializeAsync<Member>(content.ReadAsStream(), options);
 
             if (member != null)
             {
                 Member = member;
-                _context.Members.Remove(Member);
-                await _context.SaveChangesAsync();
+                response = await client.DeleteAsync("http://localhost:5000/api/Member/"+id);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return NotFound();
+                }
             }
 
             return RedirectToPage("./Index");

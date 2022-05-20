@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,11 +14,9 @@ namespace eStoreClient.Pages.Members
 {
     public class CreateModel : PageModel
     {
-        private readonly BusinessObject.FStoreDBContext _context;
 
-        public CreateModel(BusinessObject.FStoreDBContext context)
+        public CreateModel()
         {
-            _context = context;
         }
 
         public IActionResult OnGet()
@@ -30,14 +31,15 @@ namespace eStoreClient.Pages.Members
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Members == null || Member == null)
+          if (!ModelState.IsValid || Member == null)
             {
                 return Page();
             }
-
-            _context.Members.Add(Member);
-            await _context.SaveChangesAsync();
-
+          
+            var memberJson = JsonSerializer.Serialize(Member);
+            HttpClient client = new HttpClient();
+            await client.PostAsync("http://localhost:5000/api/Member", new StringContent(memberJson, Encoding.UTF8, "application/json"));
+            // HttpContent content = response.Content;
             return RedirectToPage("./Index");
         }
     }
