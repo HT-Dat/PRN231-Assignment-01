@@ -1,0 +1,56 @@
+@page
+@model eStoreClient.Pages.Members.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Member</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Member.MemberId" class="control-label"></label>
+                <input asp-for="Member.MemberId" class="form-control" />
+                <span asp-validation-for="Member.MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Member.Email" class="control-label"></label>
+                <input asp-for="Member.Email" class="form-control" />
+                <span asp-validation-for="Member.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Member.CompanyName" class="control-label"></label>
+                <input asp-for="Member.CompanyName" class="form-control" />
+                <span asp-validation-for="Member.CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Member.City" class="control-label"></label>
+                <input asp-for="Member.City" class="form-control" />
+                <span asp-validation-for="Member.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Member.Country" class="control-label"></label>
+                <input asp-for="Member.Country" class="form-control" />
+                <span asp-validation-for="Member.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Member.Password" class="control-label"></label>
+                <input asp-for="Member.Password" class="form-control" />
+                <span asp-validation-for="Member.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+

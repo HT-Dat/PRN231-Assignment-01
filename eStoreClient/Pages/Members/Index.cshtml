@@ -1,0 +1,60 @@
+@page
+@model eStoreClient.Pages.Members.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Member[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member[0].CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member[0].City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member[0].Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member[0].Password)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Member) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.MemberId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.MemberId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.MemberId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
