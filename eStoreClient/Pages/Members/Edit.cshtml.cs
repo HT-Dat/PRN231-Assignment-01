@@ -54,9 +54,9 @@ namespace eStoreClient.Pages.Members
                 return Page();
             }
 
-            var memberJson = JsonSerializer.Serialize(Member);
+            var json = JsonSerializer.Serialize(Member);
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.PutAsync("http://localhost:5000/api/Member/"+Member.MemberId, new StringContent(memberJson, Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await client.PutAsync("http://localhost:5000/api/Member/"+Member.MemberId, new StringContent(json, Encoding.UTF8, "application/json"));
             // HttpContent content = response.Content;
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
