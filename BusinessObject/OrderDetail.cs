@@ -11,7 +11,7 @@ namespace BusinessObject
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public double? Discount { get; set; }
-        [JsonIgnore] public virtual Order? Order { get; set; } = null!;
-        [JsonIgnore] public virtual Product? Product { get; set; } = null!;
+         public virtual Order? Order { get; set; } = null!;
+        public virtual Product? Product { get; set; } = null!;
     }
 }
