@@ -31,24 +31,20 @@ internal class OrderDetailDAO
     public async Task<IEnumerable<OrderDetail>> GetAll()
     {
         var context = new FStoreDBContext();
-        return await context.OrderDetails.ToListAsync();
+        return await context.OrderDetails.Include(o => o.Order)
+            .Include(o => o.Product).ToListAsync();
     }
 
     public async Task<OrderDetail?> Get(int productId, int orderId)
     {
         var context = new FStoreDBContext();
-        try
-        {
-            OrderDetail? orderDetail = await context.OrderDetails
-                .Where(orderDetail => orderDetail.OrderId == orderId && orderDetail.ProductId == productId)
-                .FirstOrDefaultAsync();
-            return orderDetail;
-        }
-        catch (Exception)
-        {
-        }
 
-        return null;
+        OrderDetail? orderDetail = await context.OrderDetails
+            .Where(orderDetail => orderDetail.OrderId == orderId && orderDetail.ProductId == productId)
+            .Include(o => o.Order)
+            .Include(o => o.Product)
+            .FirstOrDefaultAsync();
+        return orderDetail;
     }
 
     public async Task Add(OrderDetail orderDetail)
@@ -61,7 +57,7 @@ internal class OrderDetailDAO
     public async Task Delete(int productId, int orderId)
     {
         var context = new FStoreDBContext();
-        OrderDetail? orderDetailInMemory = 
+        OrderDetail? orderDetailInMemory =
             new OrderDetail() { OrderId = orderId, ProductId = productId };
         context.OrderDetails.Attach(orderDetailInMemory);
         context.OrderDetails.Remove(orderDetailInMemory);
