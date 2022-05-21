@@ -31,13 +31,13 @@ internal class OrderDAO
     public async Task<IEnumerable<Order>> GetAll()
     {
         var context = new FStoreDBContext();
-        return await context.Orders.ToListAsync();
+        return await context.Orders.Include(x => x.Member).ToListAsync();
     }
 
     public async Task<Order?> Get(int id)
     {
         var context = new FStoreDBContext();
-        Order? order = await context.Orders.Where(order => order.OrderId == id).FirstOrDefaultAsync();
+        Order? order = await context.Orders.Where(order => order.OrderId == id).Include(x => x.Member).FirstOrDefaultAsync();
         return order;
     }
 
