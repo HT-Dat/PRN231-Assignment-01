@@ -10,7 +10,7 @@ public class OrderDetailRepository : IOrderDetailRepository
         return OrderDetailDAO.Instance.GetAll();
     }
 
-    public Task<OrderDetail?> Get(int productId, int orderId)
+    public Task<IEnumerable<OrderDetail>> Get(int? productId, int orderId)
     {
         return OrderDetailDAO.Instance.Get(productId, orderId);
     }
