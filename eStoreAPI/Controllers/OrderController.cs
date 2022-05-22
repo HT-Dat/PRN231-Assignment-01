@@ -26,13 +26,13 @@ namespace eStoreAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Order>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int? memberId)
         {
             // if (_context.Orders == null)
             // {
             //     return NotFound();
             // }
-            var list = await _orderRepository.GetAll();
+            var list = await _orderRepository.GetMany(memberId);
             if (list == null)
             {
                 return NotFound();
