@@ -41,9 +41,9 @@ namespace eStoreAPI.Controllers
         [HttpGet("order-detail")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderDetail))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OrderDetail>> GetOrderDetail(int productId, int orderId)
+        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderDetail(int? productId, int orderId)
         {
-            OrderDetail? orderDetail = await _orderDetailRepository.Get(productId, orderId);
+            IEnumerable<OrderDetail> orderDetail = await _orderDetailRepository.Get(productId, orderId);
             if (orderDetail == null)
             {
                 return NotFound();
