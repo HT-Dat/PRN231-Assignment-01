@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -16,11 +17,45 @@ namespace eStoreAPI
     public class MemberController : ControllerBase
     {
         private readonly IMemberRepository _memberRepository;
+        private readonly IConfiguration Configuration;
 
-        public MemberController(IMemberRepository memberRepository)
+        public class LoginInformation
+        {
+            public string email { get; set; }
+            public string password { get; set; }
+        }
+
+        public MemberController(IMemberRepository memberRepository, IConfiguration configuration)
         {
             _memberRepository = memberRepository;
+            Configuration = configuration;
         }
+
+        [HttpPost("authentication")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<Member>> Authentication(LoginInformation loginInformation)
+        {
+            Member member = await _memberRepository.Authentication(loginInformation.email, loginInformation.password);
+            if (member == null)
+            {
+                //if get member from database is null, check if it was the admin
+
+                if (loginInformation.email.Equals(Configuration["Admin:Email"], StringComparison.OrdinalIgnoreCase) && loginInformation.password.Equals(Configuration["Admin:Password"]))
+                {
+                    return new Member { Email = Configuration["Admin:Email"], Password = Configuration["Admin:Password"], isAdmin = true};
+                }
+
+                return NotFound();
+            }
+
+            return Ok(member);
+        }
+
+        // [HttpGet("is-admin/{id}")]
+        // public async Task<bool> isAdmin(int id)
+        // {
+        //     
+        // }
 
         // GET: api/Member
         [HttpGet]
@@ -129,6 +164,7 @@ namespace eStoreAPI
             {
                 return NotFound();
             }
+
             await _memberRepository.Delete(id);
             return NoContent();
         }
