@@ -5,9 +5,9 @@ namespace DataAccess.Repository;
 
 public class ProductRepository : IProductRepository
 {
-    public Task<IEnumerable<Product>> GetAll()
+    public Task<IEnumerable<Product>> GetMany(string? queryKeyword)
     {
-        return ProductDAO.Instance.GetAll();
+        return ProductDAO.Instance.GetMany(queryKeyword);
     }
 
     public Task<Product?> Get(int id)

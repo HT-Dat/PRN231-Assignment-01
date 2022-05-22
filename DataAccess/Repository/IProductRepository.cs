@@ -4,7 +4,7 @@ namespace DataAccess.Repository;
 
 public interface IProductRepository
 {
-    Task<IEnumerable<Product>> GetAll();
+    Task<IEnumerable<Product>> GetMany(string? queryKeyword);
     Task<Product?> Get(int id);
     Task Add(Product product);
     Task Delete(int id);
