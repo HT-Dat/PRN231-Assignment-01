@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace BusinessObject
@@ -18,5 +19,6 @@ namespace BusinessObject
         public string Country { get; set; } = null!;
         public string Password { get; set; } = null!;
         [JsonIgnore] public virtual ICollection<Order> Orders { get; set; }
+        [NotMapped] public bool isAdmin { get; set; }
     }
 }
