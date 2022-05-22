@@ -28,9 +28,15 @@ internal class ProductDAO
         }
     }
 
-    public async Task<IEnumerable<Product>> GetAll()
+    public async Task<IEnumerable<Product>> GetMany(string? queryKeyword)
     {
         var context = new FStoreDBContext();
+        decimal searchPrice = -1;
+        decimal.TryParse(queryKeyword, out searchPrice);
+        if (String.IsNullOrEmpty(queryKeyword) == false)
+        {
+            return await context.Products.Where(product => product.ProductName.Contains(queryKeyword) || product.UnitPrice == searchPrice).ToListAsync();
+        }
         return await context.Products.ToListAsync();
     }
 
@@ -40,6 +46,7 @@ internal class ProductDAO
         Product? product = await context.Products.Where(product => product.ProductId == id).FirstOrDefaultAsync();
         return product;
     }
+
 
     public async Task Add(Product product)
     {
