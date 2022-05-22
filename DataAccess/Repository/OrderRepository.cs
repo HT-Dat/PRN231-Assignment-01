@@ -5,9 +5,9 @@ namespace DataAccess.Repository;
 
 public class OrderRepository : IOrderRepository
 {
-    public Task<IEnumerable<Order>> GetAll()
+    public Task<IEnumerable<Order>> GetMany(int? memberId)
     {
-        return OrderDAO.Instance.GetAll();
+        return OrderDAO.Instance.GetMany(memberId);
     }
 
     public Task<Order?> Get(int id)
