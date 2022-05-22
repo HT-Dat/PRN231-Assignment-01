@@ -35,16 +35,28 @@ internal class OrderDetailDAO
             .Include(o => o.Product).ToListAsync();
     }
 
-    public async Task<OrderDetail?> Get(int productId, int orderId)
+    public async Task<IEnumerable<OrderDetail>> Get(int? productId, int orderId)
     {
         var context = new FStoreDBContext();
+        IEnumerable<OrderDetail> listOrderDetail;
+        if (productId != null)
+        {
+            listOrderDetail = await context.OrderDetails
+                .Where(orderDetail => orderDetail.OrderId == orderId && orderDetail.ProductId == productId)
+                .Include(o => o.Order)
+                .Include(o => o.Product)
+                .ToListAsync();
+        }
+        else
+        {
+            listOrderDetail = await context.OrderDetails
+                .Where(orderDetail => orderDetail.OrderId == orderId)
+                .Include(o => o.Order)
+                .Include(o => o.Product)
+                .ToListAsync();
+        }
 
-        OrderDetail? orderDetail = await context.OrderDetails
-            .Where(orderDetail => orderDetail.OrderId == orderId && orderDetail.ProductId == productId)
-            .Include(o => o.Order)
-            .Include(o => o.Product)
-            .FirstOrDefaultAsync();
-        return orderDetail;
+        return listOrderDetail;
     }
 
     public async Task Add(OrderDetail orderDetail)
