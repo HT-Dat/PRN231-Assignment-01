@@ -24,9 +24,18 @@ namespace eStoreClient.Pages.Members
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("LoggedInUser")))
+            {
+                return Unauthorized();
+            }
+            Member loggedMember = JsonSerializer.Deserialize<Member>(HttpContext.Session.GetString("LoggedInUser"));
+            if (loggedMember.isAdmin)
+            {
+                return Unauthorized();
+            }
             if (id == null)
             {
-                return NotFound();
+                id = loggedMember.MemberId;
             }
             HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync("http://localhost:5000/api/Member/"+id);
@@ -61,6 +70,11 @@ namespace eStoreClient.Pages.Members
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return NotFound();
+            }
+            Member loggedMember = JsonSerializer.Deserialize<Member>(HttpContext.Session.GetString("LoggedInUser"));
+            if (loggedMember.isAdmin == false)
+            {
+                return Page();
             }
             return RedirectToPage("./Index");
         }
