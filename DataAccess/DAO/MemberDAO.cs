@@ -29,6 +29,14 @@ internal class MemberDAO
         }
     }
 
+    public async Task<Member> Authentication(string email, string password)
+    {
+        var context = new FStoreDBContext();
+        var list = context.Members.ToList();
+        return list.Where(member =>
+                member.Email.Equals(email, StringComparison.OrdinalIgnoreCase) && member.Password.Equals(password))
+            .FirstOrDefault();
+    }
     public async Task<IEnumerable<Member>> GetAll()
     {
         var context = new FStoreDBContext();
