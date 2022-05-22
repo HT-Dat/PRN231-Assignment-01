@@ -26,9 +26,9 @@ namespace eStoreAPI
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Product>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(string? queryKeyword)
         {
-            var list =  await _productRepository.GetAll();
+            var list =  await _productRepository.GetMany(queryKeyword);
             if (list == null)
             {
                 return NotFound();
