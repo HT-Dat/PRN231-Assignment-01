@@ -1,0 +1,55 @@
+@page
+@model eStoreClient.Pages.OrderDetails.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create" asp-route-id="@Model.id">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDetail[0].UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDetail[0].Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDetail[0].Discount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDetail[0].Order)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDetail[0].Product)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OrderDetail) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order.OrderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.ProductName)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
