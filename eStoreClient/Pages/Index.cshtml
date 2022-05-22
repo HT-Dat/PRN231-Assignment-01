@@ -1,10 +1,23 @@
 ﻿@page
+@using System.Text.Json
+@using BusinessObject
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+ @if (string.IsNullOrEmpty(HttpContext.Session.GetString("LoggedInUser")))
+    {
+        <h1 class="display-4">Welcome</h1>
+        <a asp-page="./Login/Index">Login</a>
+    }
+    else
+    {
+        var str = HttpContext.Session.GetString("LoggedInUser");
+        string name = JsonSerializer.Deserialize<Member>(str).Email;
+
+        <h1 class="display-4">Welcome, @name</h1>
+
+        <a asp-page="./Login/Index" asp-page-handler="Logout">Logout</a>
+    }
