@@ -28,16 +28,21 @@ internal class OrderDAO
         }
     }
 
-    public async Task<IEnumerable<Order>> GetAll()
+    public async Task<IEnumerable<Order>> GetMany(int? memberId)
     {
         var context = new FStoreDBContext();
-        return await context.Orders.Include(x => x.Member).ToListAsync();
+        if (memberId == null)
+        {
+            return await context.Orders.Include(x => x.Member).ToListAsync();
+        }
+        return await context.Orders.Where(x => x.MemberId == memberId).Include(x => x.Member).ToListAsync();
     }
 
     public async Task<Order?> Get(int id)
     {
         var context = new FStoreDBContext();
-        Order? order = await context.Orders.Where(order => order.OrderId == id).Include(x => x.Member).FirstOrDefaultAsync();
+        Order? order = await context.Orders.Where(order => order.OrderId == id).Include(x => x.Member)
+            .FirstOrDefaultAsync();
         return order;
     }
 
