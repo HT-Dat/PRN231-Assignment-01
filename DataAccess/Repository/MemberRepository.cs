@@ -5,6 +5,11 @@ namespace DataAccess.Repository;
 
 public class MemberRepository : IMemberRepository 
 {
+    public Task<Member> Authentication(string email, string password)
+    {
+        return MemberDAO.Instance.Authentication(email, password);
+    }
+
     public Task<IEnumerable<Member>> GetAll()
     {
         return MemberDAO.Instance.GetAll();
