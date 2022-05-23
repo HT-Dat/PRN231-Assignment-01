@@ -1,4 +1,7 @@
 @page
+@using System.Text.Json
+@using BusinessObject
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model eStoreClient.Pages.Orders.IndexModel
 
 @{
@@ -12,27 +15,28 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].RequiredDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].ShippedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].Freight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order[0].Member)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Order[0].OrderDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Order[0].RequiredDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Order[0].ShippedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Order[0].Freight)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Order[0].Member)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Order) {
+    @foreach (var item in Model.Order)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.OrderDate)
@@ -50,11 +54,16 @@
                 @Html.DisplayFor(modelItem => item.Member.Email)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.OrderId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.OrderId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.OrderId">Delete</a>
+                @if (JsonSerializer.Deserialize<Member>(HttpContext.Session.GetString("LoggedInUser")).isAdmin)
+                {
+                    <a asp-page="./Edit" asp-route-id="@item.OrderId">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.OrderId">Details</a>
+                    <a asp-page="../OrderDetails/Index" asp-route-id="@item.OrderId">Edit Order Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.OrderId">Delete</a>
+                }
+
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
